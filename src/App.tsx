@@ -14,7 +14,7 @@ function App() {
   const ref = useRef<HTMLDivElement>(null);
   const pageRef = useRef(1);
   const abortController = useRef<AbortController>();
-  const COUNT = 1000
+  const COUNT = 500
 
   function fetchItem() {
     abortController.current = new AbortController();
