@@ -15,12 +15,14 @@ function App() {
   const pageRef = useRef(1);
   const abortController = useRef<AbortController>();
   const COUNT = 500
+  const dataLengthRef = useRef(0)
+  dataLengthRef.current = data.length
 
   function fetchItem() {
     abortController.current = new AbortController();
     const signal = abortController.current.signal;
     // http://localhost:3011/items
-    fetch(`https://jsonplaceholder.typicode.com/comments?_page=${pageRef.current}`, { signal })
+    fetch(`https://jsonplaceholder.typicode.com/comments?_page=${pageRef.current}&_limit=50`, { signal })
       .then((resp) => resp.json())
       .then((json) => setData((prev: Item[]) => [...prev, ...json]))
       .catch(console.error);
@@ -29,7 +31,7 @@ function App() {
   function partialPull(ev: any) {  
     const element = ref.current;
     if (element !== null) {
-      if (data.length === COUNT) {
+      if (dataLengthRef.current === COUNT) {
         element.removeEventListener("scroll", partialPull)
       }
       const maxScroll = element?.scrollHeight - element?.clientHeight;
@@ -48,9 +50,10 @@ function App() {
 
     return () => {
       element?.removeEventListener("scroll", partialPull);
-      setData([]);
+      // setData([]);
       abortController.current?.abort();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   return (
